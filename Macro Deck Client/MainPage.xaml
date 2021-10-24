@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local ="clr-namespace:SuchByte.MacroDeck.Utils"
+             x:Class="SuchByte.MacroDeck.MainPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#2d2d2d"
+             >
+
+    <StackLayout
+        Orientation="Vertical"
+        >
+        <StackLayout
+            Margin="10">
+            <Image
+                Source="{local:ImageResource SuchByte.MacroDeck.Resources.logo.png}"
+                HeightRequest="60"
+                HorizontalOptions="FillAndExpand"
+                ></Image>
+        </StackLayout>
+
+        <StackLayout
+            Orientation="Horizontal"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            x:Name="connection"
+            Margin="30, 0, 30, 0"
+            >
+            <StackLayout
+                Margin="10, 0, 10, 30"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Center">
+                <Label
+                    Text="New connection"
+                    TextColor="White"
+                    FontSize="30"
+                    HorizontalTextAlignment="Center"
+                    ></Label>
+                <Grid
+                    Margin="0, 20, 0, 0"
+                    >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Frame
+                        Grid.Column="0"
+                        Padding="10, 5, 10, 5"
+                        BackgroundColor="#555555"
+                        BorderColor="#656565"
+                        CornerRadius="10">
+                        <Frame.Content>
+                            <Editor
+                            x:Name="hostName"
+                            Placeholder="IP address/hostname"
+                            TextColor="White"
+                            FontSize="Medium"
+                            TextChanged="hostName_TextChanged"
+                            PlaceholderColor="Silver"></Editor>
+                        </Frame.Content>
+                    </Frame>
+                    
+                    <Label
+                        Grid.Column="1"
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center"
+                        HorizontalTextAlignment="Center"
+                        TextColor="White"
+                        FontSize="Large"
+                        Text=":"></Label>
+                    <Frame
+                        Grid.Column="2"
+                        Padding="10, 5, 10, 5"
+                        BackgroundColor="#555555"
+                        BorderColor="#656565"
+                        CornerRadius="10">
+                        <Frame.Content>
+                            <Editor
+                            x:Name="port"
+                            Placeholder="Port"
+                            TextColor="White"
+                            FontSize="Medium"
+                            PlaceholderColor="Silver"
+                            Text="8191"
+                            Keyboard="Numeric"
+                            ></Editor>
+                        </Frame.Content>
+                    </Frame>
+                </Grid>
+                <Button
+                    CornerRadius="10"
+                    BorderColor="#000000"
+                    Text="Connect"
+                    Padding="10"
+                    TextColor="White"
+                    BackgroundColor="#007bff"
+                    FontSize="20"
+                    Clicked="Connect_Clicked"
+                    ></Button>
+            </StackLayout>
+
+            <StackLayout
+                Margin="10, 0, 10, 30"
+                x:Name="recentConnections"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="Center">
+                <Label
+                    Text="Recent connections"
+                    TextColor="White"
+                    FontSize="30"
+                    HorizontalTextAlignment="Center"
+                    ></Label>
+                <ScrollView
+                    Margin="0, 20, 0, 0">
+                    <StackLayout
+                        x:Name="recentConnectionList"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                        
+                        
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+        </StackLayout>
+        
+        <StackLayout
+                Orientation="Horizontal"
+                HorizontalOptions="FillAndExpand">
+            <Label
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalTextAlignment="Center"
+                    FontSize="Large"
+                    Text="{ Binding Version, StringFormat='Client version {0:F2}' }"></Label>
+
+            <Label
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    HorizontalOptions="FillAndExpand"
+                    FontSize="Large"
+                    Margin="10, 10, 10, 10"
+                    x:Name="lblClientId"
+                    Text="{ Binding ClientId, StringFormat='Client id {0:F2}' }"></Label>
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>

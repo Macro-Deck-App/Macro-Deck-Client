@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="200" android:versionName="2.0.0-beta" package="com.suchbyte.macrodeckclient" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="30" />
+	<application android:label="Macro Deck" android:theme="@style/MainTheme" android:usesCleartextTraffic="true" android:icon="@mipmap/launcher_foreground"></application>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+</manifest>

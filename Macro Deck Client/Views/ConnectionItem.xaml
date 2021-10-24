@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuchByte.MacroDeck.Views.ConnectionItem"
+             >
+  <ContentView.Content>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+            <Frame
+                Grid.Column="0"
+                BackgroundColor="#454545"
+                Padding="10, 5, 5, 5"
+                BorderColor="#656565"
+                CornerRadius="10"
+            >
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnFrameTapped"/>
+                </Frame.GestureRecognizers>
+                <Frame.Content>
+                    <Grid
+                     VerticalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="45" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label
+                        VerticalTextAlignment="Center"
+                        Grid.Column="0"
+                        TextColor="White"
+                        FontSize="Medium"
+                        Text="{Binding Connection}" />
+                    </Grid>
+                </Frame.Content>
+            </Frame>
+            <Button
+                Clicked="DeleteClicked"
+                Grid.Column="1"
+                HeightRequest="45"
+                WidthRequest="45"
+                BackgroundColor="#dc3545"
+                Text="X"
+                TextColor="White"
+                FontSize="Medium"
+                CornerRadius="10"
+            ></Button>
+        </Grid>
+        
+
+    </ContentView.Content>
+</ContentView>

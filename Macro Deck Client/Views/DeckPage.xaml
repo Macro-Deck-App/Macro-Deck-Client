@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuchByte.MacroDeck.Views.DeckPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <WebView
+            x:Name="webView"
+            HeightRequest="1000"
+            WidthRequest="1000"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"
+            Navigated="WebView_Navigated"
+            ></WebView>
+    </ContentPage.Content>
+</ContentPage>
