@@ -50,7 +50,7 @@
                         Padding="10, 5, 10, 5"
                         BackgroundColor="#555555"
                         BorderColor="#656565"
-                        CornerRadius="10">
+                        CornerRadius="6">
                         <Frame.Content>
                             <Editor
                             x:Name="hostName"
@@ -75,7 +75,7 @@
                         Padding="10, 5, 10, 5"
                         BackgroundColor="#555555"
                         BorderColor="#656565"
-                        CornerRadius="10">
+                        CornerRadius="6">
                         <Frame.Content>
                             <Editor
                             x:Name="port"
@@ -90,7 +90,7 @@
                     </Frame>
                 </Grid>
                 <Button
-                    CornerRadius="10"
+                    CornerRadius="6"
                     BorderColor="#000000"
                     Text="Connect"
                     Padding="10"

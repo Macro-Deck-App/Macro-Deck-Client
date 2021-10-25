@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.OS;
 using Xamarin.Forms;
 using SuchByte.MacroDeck.Droid;
-using Xam.Plugin.WebView.Droid;
 using static Android.OS.PowerManager;
 using Android.Content;
 using Android.Views;
@@ -54,7 +53,7 @@ namespace SuchByte.MacroDeck.Droid
             wakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
             wakeLock.Acquire();
 
-            this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+            this.Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TranslucentNavigation);
 
             int uiOptions = (int)Window.DecorView.SystemUiVisibility;
 

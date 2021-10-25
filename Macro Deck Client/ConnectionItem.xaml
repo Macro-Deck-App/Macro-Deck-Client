@@ -15,7 +15,7 @@
                 BackgroundColor="#454545"
                 Padding="10, 5, 5, 5"
                 BorderColor="#656565"
-                CornerRadius="10"
+                CornerRadius="6"
             >
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnFrameTapped"/>
