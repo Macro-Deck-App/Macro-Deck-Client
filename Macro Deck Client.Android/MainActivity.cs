@@ -9,9 +9,7 @@ using SuchByte.MacroDeck.Droid;
 using static Android.OS.PowerManager;
 using Android.Content;
 using Android.Views;
-using SuchByte.MacroDeck;
-using Plugin.CurrentActivity;
-
+using AndroidX.AppCompat.App;
 
 [assembly: Dependency(typeof(BaseUrl_Android))]
 namespace SuchByte.MacroDeck.Droid
@@ -28,6 +26,11 @@ namespace SuchByte.MacroDeck.Droid
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private WakeLock wakeLock;
+
+        public MainActivity()
+        {
+            AppCompatDelegate.CompatVectorFromResourcesEnabled = true;
+        }
 
         protected override void OnCreate(Bundle savedInstanceState)
         {

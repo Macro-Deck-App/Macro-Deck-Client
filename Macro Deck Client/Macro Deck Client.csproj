@@ -3,16 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>2.0.0-beta</Version>
+    <Version>2.0.1-beta</Version>
     <Authors>Manuel Mayer</Authors>
     <ApplicationIcon>Macro Deck 2021.ico</ApplicationIcon>
     <RootNamespace>SuchByte.MacroDeck</RootNamespace>
     <AssemblyName>Macro Deck Client</AssemblyName>
+	<AndroidAapt2LinkExtraArgs>--no-version-vectors</AndroidAapt2LinkExtraArgs>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
