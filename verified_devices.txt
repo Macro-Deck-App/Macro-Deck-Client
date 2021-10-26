@@ -1,3 +1,2 @@
 - Huawei Mate 20 Pro (Android 10)
 - Amazon Fire HD 10 (2019) (Fire OS 7 / Android 9)
-- (Motorola Moto G (2013) (Android 4.4) / Not loading because of an error in js)
