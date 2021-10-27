@@ -11,6 +11,7 @@
             HorizontalOptions="FillAndExpand"
             VerticalOptions="FillAndExpand"
             Navigated="WebView_Navigated"
+            
             ></WebView>
     </ContentPage.Content>
 </ContentPage>

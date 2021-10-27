@@ -51,7 +51,7 @@ namespace SuchByte.MacroDeck.Droid
         [Obsolete]
         protected override void OnResume()
         {
-            base.OnResume(); // Always call the superclass first.
+            base.OnResume();
             PowerManager powerManager = (PowerManager)this.GetSystemService(Context.PowerService);
             wakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
             wakeLock.Acquire();

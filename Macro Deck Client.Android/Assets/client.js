@@ -30,7 +30,7 @@ $(window).on("orientationchange", function (event) {
 });
 
 $(document).ready(function () {
-	const urlParams = new URLSearchParams(window.location.search);
+	var urlParams = new URLSearchParams(window.location.search);
 	if (urlParams.get('client-id')) {
 		clientId = urlParams.get('client-id');
 		if (urlParams.get('connect')) {
@@ -86,14 +86,9 @@ function connect(url) {
 			} else if (obj.Method == JsonMethod.GET_BUTTONS) {
 				var actionButtons = document.getElementsByClassName("action-button");
 				var labels = document.getElementsByClassName("label");
-				var loaders = document.getElementsByClassName("loader-container");
 				for (var i = 0; i < actionButtons.length; i++) {
 					actionButtons[i].style.backgroundImage = '';
 					labels[i].style.backgroundImage = '';
-				}
-				for (var i = 0; i < loaders.length; i++) {
-					loaders[i].classList.toggle("d-none", true);
-					loaders[i].setAttribute("style", "border-radius: " + ((buttonRadius / 2) / 100) * (loaders[i].offsetWidth) + "px !important;");
 				}
 				
 				this.buttons = obj.Buttons;
@@ -101,8 +96,33 @@ function connect(url) {
 					var button = document.getElementById(this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
 				
 					if (this.buttons[i] && this.buttons[i].Icon) {
-						var iconPack = icons.IconPacks.find(iconPack => iconPack.Name == this.buttons[i].Icon.split(".")[0]);
-						var icon = iconPack.Icons.find(icon => icon.IconId == this.buttons[i].Icon.split(".")[1]);						
+						var iconPack;
+						var icon;
+
+						if (Array.prototype.find != null) { // using faster find method for supported browser
+							var _buttons = this.buttons;
+
+							iconPack = icons.IconPacks.find(function (e) {
+								return e.Name == _buttons[i].Icon.split(".")[0]
+							});
+
+							icon = iconPack.Icons.find(function (e) {
+								return e.IconId == _buttons[i].Icon.split(".")[1]
+							});
+						} else { // using slower for loop to find the icon for older browsers
+							for (var j = 0; j < icons.IconPacks.length; j++) {
+								if (this.buttons[i].Icon.split(".").length > 0 && icons.IconPacks[j].Name == this.buttons[i].Icon.split(".")[0]) {
+									iconPack = icons.IconPacks[j];
+								}
+							}
+
+							for (var j = 0; j < iconPack.Icons.length; j++) {
+								if (this.buttons[i].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == this.buttons[i].Icon.split(".")[1]) {
+									icon = iconPack.Icons[j];
+								}
+							}
+                        }
+
 						button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
 					}
 					
@@ -115,8 +135,32 @@ function connect(url) {
 			} else if (obj.Method == JsonMethod.UPDATE_BUTTON) {
 				var button = document.getElementById(obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
 				if (obj.Buttons[0].Icon) {
-					var iconPack = icons.IconPacks.find(iconPack => iconPack.Name == obj.Buttons[0].Icon.split(".")[0]);
-					var icon = iconPack.Icons.find(icon => icon.IconId == obj.Buttons[0].Icon.split(".")[1]);					
+					var iconPack;
+					var icon;
+
+					if (Array.prototype.find != null) { // using faster find method to find the icon for supported browsers
+						iconPack = icons.IconPacks.find(function (e) {
+							return e.Name == obj.Buttons[0].Icon.split(".")[0]
+						});
+
+						icon = iconPack.Icons.find(function (e) {
+							return e.IconId == obj.Buttons[0].Icon.split(".")[1]
+						});
+					} else { // using slower for loop to find the icon for older browsers
+						for (var j = 0; j < icons.IconPacks.length; j++) {
+							if (obj.Buttons[0].Icon.split(".").length > 0 && icons.IconPacks[j].Name == obj.Buttons[0].Icon.split(".")[0]) {
+								iconPack = icons.IconPacks[j];
+							}
+						}
+
+						for (var j = 0; j < iconPack.Icons.length; j++) {
+							if (obj.Buttons[0].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == obj.Buttons[0].Icon.split(".")[1]) {
+								icon = iconPack.Icons[j];
+							}
+						}
+					}
+
+					
 					button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
 				} else {
 					button.style.backgroundImage = '';
@@ -151,7 +195,6 @@ function connect(url) {
 }
 
 function generateGrid(columns, rows) {
-	var maxButtons = columns*rows;
 	var buttonContainer = document.getElementById("button-container");
 	buttonContainer.innerHTML = "";
 	
@@ -205,7 +248,6 @@ function autoSize() {
     var rowsCount = rows.length;
 	var columnsCount = (divs.length / rows.length);
 	var width = window.screen.width, height = window.screen.height;
-	console.log("Auto size buttons to " + width + "x" + height)
     var buttonSizeX, buttonSizeY;
 
     if (rowsCount > columnsCount)
@@ -257,7 +299,7 @@ function doSend(message) {
     websocket.send(message);
 }
 
-const JsonMethod = {
+var JsonMethod = {
 	CONNECTED: "CONNECTED",
     GET_CONFIG: "GET_CONFIG",
     BUTTON_PRESS: "BUTTON_PRESS",

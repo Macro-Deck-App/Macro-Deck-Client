@@ -1,6 +1,7 @@
 ﻿using Android.Content;
 using Android.Webkit;
 using SuchByte.MacroDeck.Droid.Renderer;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 

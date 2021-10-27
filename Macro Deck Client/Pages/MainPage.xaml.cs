@@ -207,7 +207,6 @@ namespace SuchByte.MacroDeck
             if (!String.IsNullOrEmpty(e.NewTextValue) && e.NewTextValue.Length > 0)
             {
                 lastCharacter = e.NewTextValue.Substring(e.NewTextValue.Length - 1, 1);
-                Debug.WriteLine(lastCharacter);
                 if (lastCharacter == Environment.NewLine)
                 {
                     this.hostName.Text = e.OldTextValue.Replace(Environment.NewLine, String.Empty);

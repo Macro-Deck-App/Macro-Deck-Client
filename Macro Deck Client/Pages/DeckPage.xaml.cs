@@ -49,8 +49,9 @@ namespace SuchByte.MacroDeck.Views
         {
             this._host = host;
             this._port = port;
-            this.webView.Source = "file:///android_asset/index.html?device-type="+ this.DeviceType + "&client-id=" + this._mainPage.ClientId + "&connect=ws://" + this._host + ":" + this._port;
-            Debug.WriteLine("Loading " + this.webView.Source);
+            string file = "file:///android_asset/index.html?device-type=" + this.DeviceType + "&client-id=" + this._mainPage.ClientId + "&connect=ws://" + this._host + ":" + this._port;
+            this.webView.Source = file;
+            Debug.WriteLine("Loading " + file);
         }
 
         public void Close()

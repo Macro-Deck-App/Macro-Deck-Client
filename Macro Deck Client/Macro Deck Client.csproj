@@ -8,7 +8,6 @@
     <ApplicationIcon>Macro Deck 2021.ico</ApplicationIcon>
     <RootNamespace>SuchByte.MacroDeck</RootNamespace>
     <AssemblyName>Macro Deck Client</AssemblyName>
-	<AndroidAapt2LinkExtraArgs>--no-version-vectors</AndroidAapt2LinkExtraArgs>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

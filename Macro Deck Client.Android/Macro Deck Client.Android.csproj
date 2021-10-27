@@ -76,8 +76,11 @@
     <PackageReference Include="Plugin.CurrentActivity">
       <Version>2.1.0.4</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Xamarin.Android.Support.Vector.Drawable">
+      <Version>28.0.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidBrightnessService.cs" />
@@ -142,6 +145,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\ResizeSensor.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\url-search-params-polyfill.js" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
