@@ -3,6 +3,8 @@ Companion app for Macro Deck 2
 
 The Macro Deck client is only for Android for now. If you want to use Macro Deck with an incompatible device, you can also give the [Macro Deck web client](http://web.macrodeck.org) a try.
 
+<img height="64px" src="https://macrodeck.org/images/works_with_macrodeck2.png" />
+
 # Compatible devices
 In theory all Android devices with Android 5 and above should be compatible but in reality it is mostly different.
 
