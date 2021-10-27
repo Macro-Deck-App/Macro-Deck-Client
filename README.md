@@ -11,6 +11,7 @@ Here is a list of verfied devices where the Macro Deck Client runs without probl
 
 # Third party licenses
 This app uses some awesome 3rd party libraries:
+- [URLSearchParams Polyfill (MIT license)](https://github.com/jerrybendy/url-search-params-polyfill)
 - [Newtonsoft.Json (MIT license)](https://www.newtonsoft.com/json)
 - [Xamarin.Forms (MIT license)](https://dotnet.microsoft.com/apps/xamarin)
 - [Xamarin.Essentials (MIT license)](https://github.com/xamarin/Essentials)
