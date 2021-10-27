@@ -61,6 +61,7 @@
     <AndroidSigningStorePass>hugo1930</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SuchByte</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>hugo1930</AndroidSigningKeyPass>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
