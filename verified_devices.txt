@@ -2,4 +2,4 @@
 - Amazon Fire HD 10 (2019) (Fire OS 7 / Android 9)
 - Motorola Moto G (2013) (Android 4.4)
 - Xiaomi Redmi Note 8 Pro (Android 11)
-
+- Samsung Galaxy Note 10 (Android 11)
