@@ -99,13 +99,31 @@
                     FontSize="20"
                     Clicked="Connect_Clicked"
                     ></Button>
+                <ActivityIndicator
+            x:Name="activityIndicator"
+                Color="White" />
             </StackLayout>
-
+            
             <StackLayout
                 Margin="10, 0, 10, 30"
-                x:Name="recentConnections"
                 HorizontalOptions="FillAndExpand"
                 VerticalOptions="Center">
+                <Label
+                    Text="Found devices"
+                    TextColor="White"
+                    FontSize="30"
+                    HorizontalTextAlignment="Center"
+                    ></Label>
+                <ScrollView
+                    Margin="0, 0, 0, 10">
+                    <StackLayout
+                        x:Name="foundDevicesList"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+
+
+                    </StackLayout>
+                </ScrollView>
                 <Label
                     Text="Recent connections"
                     TextColor="White"
@@ -113,7 +131,7 @@
                     HorizontalTextAlignment="Center"
                     ></Label>
                 <ScrollView
-                    Margin="0, 20, 0, 0">
+                    Margin="0, 0, 0, 0">
                     <StackLayout
                         x:Name="recentConnectionList"
                         HorizontalOptions="Fill"
@@ -145,7 +163,18 @@
                     Margin="10, 10, 10, 10"
                     x:Name="lblClientId"
                     Text="{ Binding ClientId, StringFormat='Client id {0:F2}' }"></Label>
+
+
+            <Label
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    HorizontalOptions="FillAndExpand"
+                    FontSize="Large"
+                    Margin="10, 10, 10, 10"
+                    x:Name="lblWebViewVersion"></Label>
         </StackLayout>
     </StackLayout>
+    
 
 </ContentPage>

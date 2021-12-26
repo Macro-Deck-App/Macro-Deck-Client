@@ -71,119 +71,133 @@ function connect(url) {
 	websocket.onmessage = function (e) {
 		try {
 			var obj = JSON.parse(e.data);
-			if (obj.Method == JsonMethod.GET_CONFIG) {
-				buttonSpacing = obj.ButtonSpacing;
-				buttonRadius = obj.ButtonRadius;
-				buttonBackground = obj.ButtonBackground;
-				brightness = obj.Brightness;
-				var settingsObj = { "Brightness" : brightness }
-				document.location.hash = 'connected;' + JSON.stringify(settingsObj);
-				generateGrid(obj.Columns, obj.Rows);
-				var jsonObj = { "Method" : JsonMethod.GET_BUTTONS }
-				doSend(JSON.stringify(jsonObj));
+			switch (obj.Method) {
+				case JsonMethod.GET_CONFIG:
+					buttonSpacing = obj.ButtonSpacing;
+					buttonRadius = obj.ButtonRadius;
+					buttonBackground = obj.ButtonBackground;
+					brightness = obj.Brightness;
+					var settingsObj = { "Brightness": brightness }
+					document.location.hash = 'connected;' + JSON.stringify(settingsObj);
+					generateGrid(obj.Columns, obj.Rows);
+					var jsonObj = { "Method": JsonMethod.GET_BUTTONS }
+					doSend(JSON.stringify(jsonObj));
 
-				autoSize();
-			} else if (obj.Method == JsonMethod.GET_BUTTONS) {
-				var actionButtons = document.getElementsByClassName("action-button");
-				var labels = document.getElementsByClassName("label");
-				for (var i = 0; i < actionButtons.length; i++) {
-					actionButtons[i].style.backgroundImage = '';
-					labels[i].style.backgroundImage = '';
-				}
-				
-				this.buttons = obj.Buttons;
-				for (var i = 0; i < this.buttons.length; i++) {
-					var button = document.getElementById(this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
-				
-					if (this.buttons[i] && this.buttons[i].Icon) {
+					autoSize();
+					break;
+				case JsonMethod.GET_BUTTONS:
+					var actionButtons = document.getElementsByClassName("action-button");
+					var labels = document.getElementsByClassName("label");
+					for (var i = 0; i < actionButtons.length; i++) {
+						actionButtons[i].style.backgroundImage = '';
+						labels[i].style.backgroundImage = '';
+					}
+
+					this.buttons = obj.Buttons;
+					for (var i = 0; i < this.buttons.length; i++) {
+						var button = document.getElementById(this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
+
+						if (this.buttons[i] && this.buttons[i].Icon) {
+							var iconPack;
+							var icon;
+
+							if (Array.prototype.find != null) { // using faster find method for supported browser
+								var _buttons = this.buttons;
+
+								iconPack = icons.IconPacks.find(function (e) {
+									return e.Name == _buttons[i].Icon.split(".")[0]
+								});
+
+								icon = iconPack.Icons.find(function (e) {
+									return e.IconId == _buttons[i].Icon.split(".")[1]
+								});
+							} else { // using slower for loop to find the icon for older browsers
+								for (var j = 0; j < icons.IconPacks.length; j++) {
+									if (this.buttons[i].Icon.split(".").length > 0 && icons.IconPacks[j].Name == this.buttons[i].Icon.split(".")[0]) {
+										iconPack = icons.IconPacks[j];
+									}
+								}
+
+								for (var j = 0; j < iconPack.Icons.length; j++) {
+									if (this.buttons[i].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == this.buttons[i].Icon.split(".")[1]) {
+										icon = iconPack.Icons[j];
+									}
+								}
+							}
+
+							button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
+						}
+
+						var label = document.getElementById("label_" + this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
+						if (this.buttons[i].Label && this.buttons[i].Label.LabelBase64) {
+							label.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].Label.LabelBase64 + ')';
+						} else if (this.buttons[i].LabelBase64) {
+							label.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].LabelBase64 + ')';
+						} else {
+							label.style.backgroundImage = '';
+						}
+					}
+					autoSize();
+					break;
+				case JsonMethod.UPDATE_BUTTON:
+					var button = document.getElementById(obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
+					if (obj.Buttons[0].Icon) {
 						var iconPack;
 						var icon;
 
-						if (Array.prototype.find != null) { // using faster find method for supported browser
-							var _buttons = this.buttons;
-
+						if (Array.prototype.find != null) { // using faster find method to find the icon for supported browsers
 							iconPack = icons.IconPacks.find(function (e) {
-								return e.Name == _buttons[i].Icon.split(".")[0]
+								return e.Name == obj.Buttons[0].Icon.split(".")[0]
 							});
 
 							icon = iconPack.Icons.find(function (e) {
-								return e.IconId == _buttons[i].Icon.split(".")[1]
+								return e.IconId == obj.Buttons[0].Icon.split(".")[1]
 							});
 						} else { // using slower for loop to find the icon for older browsers
 							for (var j = 0; j < icons.IconPacks.length; j++) {
-								if (this.buttons[i].Icon.split(".").length > 0 && icons.IconPacks[j].Name == this.buttons[i].Icon.split(".")[0]) {
+								if (obj.Buttons[0].Icon.split(".").length > 0 && icons.IconPacks[j].Name == obj.Buttons[0].Icon.split(".")[0]) {
 									iconPack = icons.IconPacks[j];
 								}
 							}
 
 							for (var j = 0; j < iconPack.Icons.length; j++) {
-								if (this.buttons[i].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == this.buttons[i].Icon.split(".")[1]) {
+								if (obj.Buttons[0].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == obj.Buttons[0].Icon.split(".")[1]) {
 									icon = iconPack.Icons[j];
 								}
 							}
-                        }
+						}
+
 
 						button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
-					}
-					
-					var label = document.getElementById("label_" + this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
-					if (this.buttons[i].Label.LabelBase64) {
-						label.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].Label.LabelBase64 + ')';
-					}
-				}
-				autoSize();
-			} else if (obj.Method == JsonMethod.UPDATE_BUTTON) {
-				var button = document.getElementById(obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
-				if (obj.Buttons[0].Icon) {
-					var iconPack;
-					var icon;
-
-					if (Array.prototype.find != null) { // using faster find method to find the icon for supported browsers
-						iconPack = icons.IconPacks.find(function (e) {
-							return e.Name == obj.Buttons[0].Icon.split(".")[0]
-						});
-
-						icon = iconPack.Icons.find(function (e) {
-							return e.IconId == obj.Buttons[0].Icon.split(".")[1]
-						});
-					} else { // using slower for loop to find the icon for older browsers
-						for (var j = 0; j < icons.IconPacks.length; j++) {
-							if (obj.Buttons[0].Icon.split(".").length > 0 && icons.IconPacks[j].Name == obj.Buttons[0].Icon.split(".")[0]) {
-								iconPack = icons.IconPacks[j];
-							}
-						}
-
-						for (var j = 0; j < iconPack.Icons.length; j++) {
-							if (obj.Buttons[0].Icon.split(".").length > 0 && iconPack.Icons[j].IconId == obj.Buttons[0].Icon.split(".")[1]) {
-								icon = iconPack.Icons[j];
-							}
-						}
+					} else {
+						button.style.backgroundImage = '';
 					}
 
-					
-					button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
-				} else {
-					button.style.backgroundImage = '';
-				}
-				
-				var label = document.getElementById("label_" + obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
-				if (obj.Buttons[0].Label.LabelBase64) {
-					label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].Label.LabelBase64 + ')';
-				}
-				
-			} else if (obj.Method == JsonMethod.UPDATE_LABEL) {
-				var label = document.getElementById("label_" + obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
-				if (obj.Buttons[0].Label.LabelBase64) {
-					label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].Label.LabelBase64 + ')';
-				}
-			} else if (obj.Method == JsonMethod.GET_ICONS) {
-				icons = obj;
-			}
+					var label = document.getElementById("label_" + obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
+					if (obj.Buttons[0].Label && obj.Buttons[0].Label.LabelBase64) {
+						label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].Label.LabelBase64 + ')';
+					} else if (obj.Buttons[0].LabelBase64) {
+						label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].LabelBase64 + ')';
+					} else {
+						label.style.backgroundImage = '';
+					}
+					break;
+				case JsonMethod.UPDATE_LABEL:
+					var label = document.getElementById("label_" + obj.Buttons[0].Position_Y + "_" + obj.Buttons[0].Position_X);
+					if (obj.Buttons[0].Label && obj.Buttons[0].Label.LabelBase64) {
+						label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].Label.LabelBase64 + ')';
+					} else if (obj.Buttons[0].LabelBase64) {
+						label.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].LabelBase64 + ')';
+					} else {
+						label.style.backgroundImage = '';
+					}
+					break;
+				case JsonMethod.GET_ICONS:
+					icons = obj;
+					break;
+            }
 		} catch(err) {
 			console.log(err);
-			if (document.getElementById("button-connect-spinner")) {
-				document.getElementById("button-connect-spinner").classList.toggle("d-none", true);
-			}
 		}
 	};
 	
@@ -307,7 +321,6 @@ var JsonMethod = {
 	UPDATE_BUTTON: "UPDATE_BUTTON",
 	UPDATE_LABEL: "UPDATE_LABEL",
 	BUTTON_DONE: "BUTTON_DONE",
-	REQUEST_PIN: "REQUEST_PIN",
 	GET_ICONS: "GET_ICONS",
 	
 }

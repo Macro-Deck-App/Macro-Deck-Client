@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuchByte.MacroDeck.DeviceItem">
+    <ContentView.Content>
+
+        <Frame
+                Grid.Column="0"
+                BackgroundColor="#454545"
+                Padding="10, 5, 5, 5"
+                BorderColor="#656565"
+                CornerRadius="6"
+            >
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Frame_Tapped"/>
+            </Frame.GestureRecognizers>
+            <Frame.Content>
+                <StackLayout
+                    Orientation="Vertical">
+                    <Label
+                        VerticalTextAlignment="Center"
+                        Padding="0"
+                        Margin="0"
+                        TextColor="White"
+                        FontSize="Medium"
+                        Text="{Binding DeviceName}" />
+                    <Label
+                        VerticalTextAlignment="Center"
+                        Padding="0"
+                        Margin="0"
+                        TextColor="White"
+                        FontSize="Small"
+                        Text="{Binding Connection}" />
+                </StackLayout>
+            </Frame.Content>
+        </Frame>
+
+    </ContentView.Content>
+</ContentView>

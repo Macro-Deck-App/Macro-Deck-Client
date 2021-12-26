@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>2.0.1-beta</Version>
+    <Version>2.0.3-beta</Version>
     <Authors>Manuel Mayer</Authors>
     <ApplicationIcon>Macro Deck 2021.ico</ApplicationIcon>
     <RootNamespace>SuchByte.MacroDeck</RootNamespace>
@@ -42,6 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="DeviceItem.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

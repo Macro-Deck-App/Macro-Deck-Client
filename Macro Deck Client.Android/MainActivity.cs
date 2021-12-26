@@ -48,36 +48,49 @@ namespace SuchByte.MacroDeck.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        [Obsolete]
+
         protected override void OnResume()
         {
             base.OnResume();
-            PowerManager powerManager = (PowerManager)this.GetSystemService(Context.PowerService);
-            wakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
-            wakeLock.Acquire();
+            try
+            {
+                PowerManager powerManager = (PowerManager)this.GetSystemService(Context.PowerService);
+                wakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
+                wakeLock.Acquire();
 
-            this.Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TranslucentNavigation);
+                this.Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TranslucentNavigation);
 
-            int uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
 
-            uiOptions |= (int)SystemUiFlags.LowProfile;
-            uiOptions |= (int)SystemUiFlags.Fullscreen;
-            uiOptions |= (int)SystemUiFlags.HideNavigation;
-            uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+                uiOptions |= (int)SystemUiFlags.LowProfile;
+                uiOptions |= (int)SystemUiFlags.Fullscreen;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
 
-            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            } catch { }
+            
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            wakeLock.Release();
+            try
+            {
+                if (wakeLock == null) return;
+                wakeLock.Release();
+            } catch { }
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            wakeLock.Release();
+            try
+            {
+                if (wakeLock == null) return;
+                wakeLock.Release();
+            }
+            catch { }
         }
     }
 

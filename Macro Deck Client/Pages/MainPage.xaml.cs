@@ -53,7 +53,14 @@ namespace SuchByte.MacroDeck
                 this._width = width;
                 this._height = height;
                 this.connection.Orientation = (this._width > this._height) ? StackOrientation.Horizontal : StackOrientation.Vertical; // Responsive
+                this.foundDevicesList.Children.Clear();
             }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            BroadcastReceiver.Start();
         }
 
         public MainPage()
@@ -88,8 +95,37 @@ namespace SuchByte.MacroDeck
                 this.lblClientId.Text = "Client id: " + this._clientId;
             }
             catch { }
+            BroadcastReceiver.DeviceFound += BroadcastReceiver_DeviceFound;
+        }
 
-            Debug.WriteLine(this.ClientId);
+        private void BroadcastReceiver_DeviceFound(object sender, DeviceFoundEventArgs e)
+        {
+            if (!this.IsVisible || this.foundDevicesList.Children.Count >= 3) return;
+            Device.BeginInvokeOnMainThread(() => {
+                foreach (DeviceItem foundDevicesListItem in this.foundDevicesList.Children)
+                {
+                    if (foundDevicesListItem.DeviceName.Equals(e.ComputerName))
+                    {
+                        foundDevicesListItem.Parent = this.foundDevicesList;
+                        foundDevicesListItem.IsVisible = true;
+                        return;
+                    }
+                }
+
+                DeviceItem deviceItem = new DeviceItem(e.ComputerName, e.Host);
+                deviceItem.ItemTapped += DeviceItemTapped;
+                this.foundDevicesList.Children.Add(deviceItem);
+            });            
+        }
+
+        private void DeviceItemTapped(object sender, EventArgs e)
+        {
+            DeviceItem deviceItem = sender as DeviceItem;
+            string hostName = deviceItem.Connection.Split(':')[0];
+            string port = deviceItem.Connection.Split(':')[1];
+            this.hostName.Text = hostName;
+            this.port.Text = port;
+            this.Connect();
         }
 
         private void OnConnectionStateChanged(object sender, ConnectionStateChangedEventArgs e)
@@ -97,6 +133,7 @@ namespace SuchByte.MacroDeck
             switch (e.State)
             {
                 case ConnectionState.CONNECTED:
+                    BroadcastReceiver.Stop();
                     if (!this._recentConnections.Contains(this._deckPage.Host + ":" + this._deckPage.Port))
                     {
                         this._recentConnections.Add(this._deckPage.Host + ":" + this._deckPage.Port);
@@ -105,11 +142,18 @@ namespace SuchByte.MacroDeck
 
                     break;
                 case ConnectionState.ERROR:
-                    Navigation.PopToRootAsync();
                     DisplayAlert("Error", "Connection refused", "OK");
+                    try
+                    {
+                        Navigation.PopToRootAsync();
+                    }
+                    catch { }
                     break;
                 case ConnectionState.CLOSED:
-                    Navigation.PopToRootAsync();
+                    try
+                    {
+                        Navigation.PopToRootAsync();
+                    } catch { }
                     break;
             }
         }
@@ -135,10 +179,8 @@ namespace SuchByte.MacroDeck
                 connectionItem.ItemTapped += this.RecentConnectionItemTapped;
                 connectionItem.DeleteTapped += this.RecentConnectionItemDeleteTapped;
                 this.recentConnectionList.Children.Add(connectionItem);
-
-                Debug.WriteLine(connection);
             }
-            this.recentConnections.IsVisible = this._recentConnections.Count > 0;
+            //this.recentConnections.IsVisible = this._recentConnections.Count > 0;
         }
 
         private void RecentConnectionItemDeleteTapped(object sender, EventArgs e)
@@ -197,8 +239,12 @@ namespace SuchByte.MacroDeck
                 return;
             }
 
-            Navigation.PushAsync(this._deckPage);
-            this._deckPage.Open(this.hostName.Text.Replace(Environment.NewLine, String.Empty), port);
+            try
+            {
+                if (this._deckPage == null) return;
+                Navigation.PushAsync(this._deckPage);
+                this._deckPage.Open(this.hostName.Text.Replace(Environment.NewLine, String.Empty), port);
+            } catch { }
         }
 
         private void hostName_TextChanged(object sender, TextChangedEventArgs e)
