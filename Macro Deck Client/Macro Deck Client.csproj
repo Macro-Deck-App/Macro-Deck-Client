@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>2.0.3-beta</Version>
+    <Version>2.0.4-beta</Version>
     <Authors>Manuel Mayer</Authors>
     <ApplicationIcon>Macro Deck 2021.ico</ApplicationIcon>
     <RootNamespace>SuchByte.MacroDeck</RootNamespace>
