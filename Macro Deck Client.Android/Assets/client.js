@@ -3,7 +3,6 @@ var websocket;
 var connected;
 var recentConnections = [];
 var clientId;
-var apiVersion = 20;
 var buttonSpacing = 5;
 var buttonRadius = 40;
 var buttonSize = 100;
@@ -11,8 +10,11 @@ var buttonBackground = false;
 var brightness = 0.2;
 var icons = [];
 var deviceType = "";
+var pressTimer;
+var longPress = false;
+var supportButtonReleaseLongPress = false;
 
-
+var apiVersion = 20;
 
 function disconnect() {
 	lastUrl = null;
@@ -76,6 +78,9 @@ function connect(url) {
 					buttonSpacing = obj.ButtonSpacing;
 					buttonRadius = obj.ButtonRadius;
 					buttonBackground = obj.ButtonBackground;
+					if (obj.SupportButtonReleaseLongPress && obj.SupportButtonReleaseLongPress == true) {
+						supportButtonReleaseLongPress = true;
+					}
 					brightness = obj.Brightness;
 					var settingsObj = { "Brightness": brightness }
 					document.location.hash = 'connected;' + JSON.stringify(settingsObj);
@@ -237,10 +242,10 @@ function generateGrid(columns, rows) {
 			button.classList.toggle("btn-secondary", buttonBackground);
 			button.setAttribute("id", i + "_" + j);
 			$(button).bind('touchstart', function() {
-				onMouseDown(this.id);
+				onTouchStart(this.id);
 			});
 			$(button).bind('touchend', function() {
-				onMouseUp(this.id);
+				onTouchEnd(this.id);
 			});
 			
 			
@@ -304,19 +309,45 @@ function autoSize() {
 	
 }
 
-function onMouseDown(id) {
+function onTouchStart(id) {
+	buttonPress(id);
+}
+
+function onTouchEnd(id) {
+	buttonPressRelease(id);
+}
+
+function buttonPress(id) {
+	longPress = false;
+	pressTimer = window.setTimeout(function () {
+		longPress = true;
+		var jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_LONG_PRESS }
+		if (supportButtonReleaseLongPress) {
+			doSend(JSON.stringify(jsonObj));
+		}
+	}, 1000);
 	if (document.getElementById("col_" + id)) {
 		document.getElementById("col_" + id).classList.toggle('pressed', true);
 	}
-	var jsonObj = { "Message" : id, "Method" : JsonMethod.BUTTON_PRESS }
+	var jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_PRESS }
 	doSend(JSON.stringify(jsonObj));
 }
 
-function onMouseUp(id) {
+function buttonPressRelease(id) {
+	clearTimeout(pressTimer);
 	if (document.getElementById("col_" + id)) {
 		document.getElementById("col_" + id).classList.toggle('pressed', false);
 	}
+
+	var jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_RELEASE }
+	if (longPress) {
+		jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_LONG_PRESS_RELEASE }
+	}
+	if (supportButtonReleaseLongPress) {
+		doSend(JSON.stringify(jsonObj));
+	}
 }
+
 
 function doSend(message) {
     websocket.send(message);
@@ -324,12 +355,16 @@ function doSend(message) {
 
 var JsonMethod = {
 	CONNECTED: "CONNECTED",
-    GET_CONFIG: "GET_CONFIG",
-    BUTTON_PRESS: "BUTTON_PRESS",
-    GET_BUTTONS: "GET_BUTTONS",
+	GET_CONFIG: "GET_CONFIG",
+	BUTTON_PRESS: "BUTTON_PRESS",
+	GET_BUTTONS: "GET_BUTTONS",
 	UPDATE_BUTTON: "UPDATE_BUTTON",
 	UPDATE_LABEL: "UPDATE_LABEL",
 	BUTTON_DONE: "BUTTON_DONE",
+	REQUEST_PIN: "REQUEST_PIN",
 	GET_ICONS: "GET_ICONS",
-	
+	BUTTON_PRESS: "BUTTON_PRESS",
+	BUTTON_LONG_PRESS: "BUTTON_LONG_PRESS",
+	BUTTON_RELEASE: "BUTTON_RELEASE",
+	BUTTON_LONG_PRESS_RELEASE: "BUTTON_LONG_PRESS_RELEASE"
 }
