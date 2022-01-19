@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>2.1.0-beta</Version>
+    <Version>2.1.1-beta</Version>
     <Authors>Manuel Mayer</Authors>
     <ApplicationIcon>Macro Deck 2021.ico</ApplicationIcon>
     <RootNamespace>SuchByte.MacroDeck</RootNamespace>

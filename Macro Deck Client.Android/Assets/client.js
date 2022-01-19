@@ -278,12 +278,6 @@ function autoSize() {
 	var width = window.screen.width, height = window.screen.height;
     var buttonSizeX, buttonSizeY;
 
-    if (rowsCount > columnsCount)
-    {	
-		rowsCount = (divs.length / rows.length);
-        columnsCount = rows.length;
-
-    }
     buttonSizeX = width / columnsCount;
     buttonSizeY = height / rowsCount;
     buttonSize = Math.min(buttonSizeX, buttonSizeY);
