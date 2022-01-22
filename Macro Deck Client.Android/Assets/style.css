@@ -14,14 +14,19 @@ p, h1, h2, h3, h4, h5, h6, label {
 	transform: scale(0.9);
 }
 
+.release-transition {
+	transition: all .3s linear;
+}
+
+
 
 .button-row {
 	display: -ms-flexbox;
 	display: flex;
 	-ms-flex-wrap: wrap;
 	flex-wrap: wrap;
-	margin: 0!important;
-	padding: 0!important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 .blockBox {

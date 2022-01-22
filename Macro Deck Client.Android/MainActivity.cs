@@ -14,6 +14,11 @@ using AndroidX.AppCompat.App;
 [assembly: Dependency(typeof(BaseUrl_Android))]
 namespace SuchByte.MacroDeck.Droid
 {
+    public static class AppInstance
+    {
+        public static MainActivity MainActivity { get; set; }
+    }
+
     public class BaseUrl_Android : IBaseUrl
     {
         public string Get()
@@ -25,10 +30,13 @@ namespace SuchByte.MacroDeck.Droid
     [Activity(Label = "Macro Deck", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private WakeLock wakeLock;
+        public WakeLock WakeLock;
+
+        public bool WakeLockActive = false;
 
         public MainActivity()
         {
+            AppInstance.MainActivity ??= this;
             AppCompatDelegate.CompatVectorFromResourcesEnabled = true;
         }
 
@@ -37,9 +45,15 @@ namespace SuchByte.MacroDeck.Droid
             base.OnCreate(savedInstanceState);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Forms.Init(this, savedInstanceState);
 
             LoadApplication(new App());
+
+            try
+            {
+                PowerManager powerManager = (PowerManager)this.GetSystemService(Context.PowerService);
+                WakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
+            } catch { }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -52,12 +66,42 @@ namespace SuchByte.MacroDeck.Droid
         protected override void OnResume()
         {
             base.OnResume();
+            RemoveNavigation();
             try
             {
-                PowerManager powerManager = (PowerManager)this.GetSystemService(Context.PowerService);
-                wakeLock = powerManager.NewWakeLock(WakeLockFlags.Full, "Macro Deck");
-                wakeLock.Acquire();
+                if (WakeLockActive && WakeLock != null)
+                {
+                    WakeLock.Acquire();
+                }
+            }
+            catch { }
+        }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            try
+            {
+                if (WakeLock == null || !WakeLock.IsHeld) return;
+                WakeLock.Release();
+            } catch { }
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            try
+            {
+                if (WakeLock == null || !WakeLock.IsHeld) return;
+                WakeLock.Release();
+            }
+            catch { }
+        }
+
+        private void RemoveNavigation()
+        {
+            try
+            {
                 this.Window.AddFlags(WindowManagerFlags.Fullscreen | WindowManagerFlags.TranslucentNavigation);
 
                 int uiOptions = (int)Window.DecorView.SystemUiVisibility;
@@ -68,27 +112,6 @@ namespace SuchByte.MacroDeck.Droid
                 uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
 
                 Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-            } catch { }
-            
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            try
-            {
-                if (wakeLock == null) return;
-                wakeLock.Release();
-            } catch { }
-        }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-            try
-            {
-                if (wakeLock == null) return;
-                wakeLock.Release();
             }
             catch { }
         }

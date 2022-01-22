@@ -36,6 +36,12 @@ namespace SuchByte.MacroDeck
 
         List<string> _recentConnections = new List<string>();
 
+        private string _autoConnectHost = "";
+        private string _currentHostAddress = "";
+        private int _currentHostPort = 8191;
+
+        public bool ManuallyDisconnected = false;
+
         public string Version
         {
             get
@@ -61,6 +67,13 @@ namespace SuchByte.MacroDeck
         {
             base.OnAppearing();
             BroadcastReceiver.Start();
+        }
+
+        private void ClearFoundDevices()
+        {
+            Device.BeginInvokeOnMainThread(() => {
+                this.foundDevicesList.Children.Clear();
+            });
         }
 
         public MainPage()
@@ -95,13 +108,42 @@ namespace SuchByte.MacroDeck
                 this.lblClientId.Text = "Client id: " + this._clientId;
             }
             catch { }
+            try
+            {
+                if (Preferences.ContainsKey("auto-connect"))
+                {
+                    this._autoConnectHost = Preferences.Get("auto-connect", string.Empty);
+                }
+            }
+            catch { }
+            try
+            {
+                if (Preferences.ContainsKey("wake-lock"))
+                {
+                    SetWakeLockMethod(Preferences.Get("wake-lock", "Connected"));
+                }
+            }
+            catch { }
             BroadcastReceiver.DeviceFound += BroadcastReceiver_DeviceFound;
         }
 
         private void BroadcastReceiver_DeviceFound(object sender, DeviceFoundEventArgs e)
         {
             if (!this.IsVisible || this.foundDevicesList.Children.Count >= 3) return;
+            
             Device.BeginInvokeOnMainThread(() => {
+                if (!this.ManuallyDisconnected && !string.IsNullOrWhiteSpace(this._autoConnectHost) && e.Host.Equals(this._autoConnectHost))
+                {
+                    try
+                    {
+                        string hostName = e.Host.Split(':')[0];
+                        string port = e.Host.Split(':')[1];
+                        this.hostName.Text = hostName;
+                        this.port.Text = port;
+                        this.Connect();
+                    }
+                    catch { }
+                }
                 foreach (DeviceItem foundDevicesListItem in this.foundDevicesList.Children)
                 {
                     if (foundDevicesListItem.DeviceName.Equals(e.ComputerName))
@@ -133,6 +175,9 @@ namespace SuchByte.MacroDeck
             switch (e.State)
             {
                 case ConnectionState.CONNECTED:
+                    ManuallyDisconnected = false;
+                    SetWakeLock(true);
+                    ClearFoundDevices();
                     BroadcastReceiver.Stop();
                     if (!this._recentConnections.Contains(this._deckPage.Host + ":" + this._deckPage.Port))
                     {
@@ -142,7 +187,8 @@ namespace SuchByte.MacroDeck
 
                     break;
                 case ConnectionState.ERROR:
-                    DisplayAlert("Error", "Connection refused", "OK");
+                    SetWakeLock(false);
+                    DisplayAlert("Error", "Could not connect to host. Please check the wiki or get help in the Discord server.", "OK");
                     try
                     {
                         Navigation.PopToRootAsync();
@@ -150,6 +196,7 @@ namespace SuchByte.MacroDeck
                     catch { }
                     break;
                 case ConnectionState.CLOSED:
+                    SetWakeLock(false);
                     try
                     {
                         Navigation.PopToRootAsync();
@@ -161,8 +208,19 @@ namespace SuchByte.MacroDeck
         public void OnSettingsChanged(object sender, SettingsChangedEventArgs e)
         {
             this._settings = e.Settings;
+            Debug.WriteLine("Settings changed");
             var brightnessService = DependencyService.Get<IBrightnessService>();
             brightnessService.SetBrightness(this._settings.Brightness);
+            if (this._settings.AutoConnect && !string.IsNullOrWhiteSpace(this._currentHostAddress))
+            {
+                this._autoConnectHost = this._currentHostAddress + ":" + this._currentHostPort;
+            } else
+            {
+                this._autoConnectHost = string.Empty;
+            }
+            Preferences.Set("auto-connect", this._autoConnectHost);
+            Preferences.Set("wake-lock", this._settings.WakeLock);
+            SetWakeLockMethod(this._settings.WakeLock);
         }
 
         private void LoadRecentConnections()
@@ -243,23 +301,39 @@ namespace SuchByte.MacroDeck
             {
                 if (this._deckPage == null) return;
                 Navigation.PushAsync(this._deckPage);
-                this._deckPage.Open(this.hostName.Text.Replace(Environment.NewLine, String.Empty), port);
+                this._currentHostAddress = this.hostName.Text.Replace(Environment.NewLine, string.Empty);
+                this._currentHostPort = port;
+                this._deckPage.Open(this._currentHostAddress, this._currentHostPort);
             } catch { }
         }
 
-        private void hostName_TextChanged(object sender, TextChangedEventArgs e)
+        private void HostName_TextChanged(object sender, TextChangedEventArgs e)
         {
             string lastCharacter;
-            if (!String.IsNullOrEmpty(e.NewTextValue) && e.NewTextValue.Length > 0)
+            if (!string.IsNullOrEmpty(e.NewTextValue) && e.NewTextValue.Length > 0)
             {
                 lastCharacter = e.NewTextValue.Substring(e.NewTextValue.Length - 1, 1);
                 if (lastCharacter == Environment.NewLine)
                 {
-                    this.hostName.Text = e.OldTextValue.Replace(Environment.NewLine, String.Empty);
+                    this.hostName.Text = e.OldTextValue.Replace(Environment.NewLine, string.Empty);
                     this.Connect();
                 }
             }
             
+        }
+
+        private void SetWakeLock(bool state)
+        {
+            var wakeLockService = DependencyService.Get<IWakeLockService>();
+            wakeLockService.SetWakeLock(state);
+        }
+
+        private void SetWakeLockMethod(string wakeLockMethod)
+        {
+            var wakeLockService = DependencyService.Get<IWakeLockService>();
+            wakeLockService.WakeLockMethod = wakeLockMethod;
+            Debug.WriteLine($"Set wake lock method: " + wakeLockMethod.ToString());
+            SetWakeLock(true);
         }
 
     }

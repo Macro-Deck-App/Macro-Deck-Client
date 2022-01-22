@@ -35,6 +35,8 @@ namespace SuchByte.MacroDeck.Views
         public int _port;
         public int Port { get { return this._port; } }
 
+        private string currentSettingsJson = "";
+
         public event EventHandler<ConnectionStateChangedEventArgs> ConnectionStateChanged;
         public event EventHandler<SettingsChangedEventArgs> SettingsChanged;
 
@@ -43,6 +45,7 @@ namespace SuchByte.MacroDeck.Views
         {
             this._mainPage = mainPage;
             InitializeComponent();
+            
         }
 
         public void Open(string host, int port)
@@ -97,6 +100,8 @@ namespace SuchByte.MacroDeck.Views
                     if (newState.Split(';').Length > 0)
                     {
                         string settingsJson = newState.Split(';')[1];
+                        if (currentSettingsJson.Equals(settingsJson)) return;
+                        Debug.WriteLine("Settings: " + settingsJson);
                         ClientSettings clientSettings = JsonConvert.DeserializeObject<ClientSettings>(settingsJson);
                         if (SettingsChanged != null)
                         {
@@ -109,6 +114,7 @@ namespace SuchByte.MacroDeck.Views
 
         protected override bool OnBackButtonPressed()
         {
+            this._mainPage.ManuallyDisconnected = true;
             this.Close();
             return true;
         }

@@ -57,7 +57,7 @@
                             Placeholder="IP address/hostname"
                             TextColor="White"
                             FontSize="Medium"
-                            TextChanged="hostName_TextChanged"
+                            TextChanged="HostName_TextChanged"
                             PlaceholderColor="Silver"></Editor>
                         </Frame.Content>
                     </Frame>

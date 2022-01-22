@@ -62,7 +62,7 @@
     <AndroidSigningKeyAlias>SuchByte</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>hugo1930</AndroidSigningKeyPass>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidBrightnessService.cs" />
+    <Compile Include="AndroidWakeLockService.cs" />
     <Compile Include="AppVersionProvider.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderer\CustomEntityRenderer.cs" />

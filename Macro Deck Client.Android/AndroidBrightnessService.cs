@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Plugin.CurrentActivity;
 using SuchByte.MacroDeck;
+using SuchByte.MacroDeck.Droid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,16 @@ public class AndroidBrightnessService : IBrightnessService
 {
     public void SetBrightness(float brightness)
     {
-        Log.Debug("Brightness", "value: " + brightness);
-        var window = CrossCurrentActivity.Current.Activity.Window;
-        var attributesWindow = new WindowManagerLayoutParams();
+        Device.BeginInvokeOnMainThread(() =>
+        {
+            Window window = AppInstance.MainActivity.Window;
+            var attributesWindow = new WindowManagerLayoutParams();
 
-        attributesWindow.CopyFrom(window.Attributes);
-        attributesWindow.ScreenBrightness = brightness;
+            attributesWindow.CopyFrom(window.Attributes);
+            attributesWindow.ScreenBrightness = brightness;
 
-        window.Attributes = attributesWindow;
+            window.Attributes = attributesWindow;
+        });
+        
     }
 }

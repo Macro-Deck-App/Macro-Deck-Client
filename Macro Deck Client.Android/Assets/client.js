@@ -3,6 +3,8 @@ var websocket;
 var connected;
 var recentConnections = [];
 var clientId;
+var rows = 3;
+var columns = 5;
 var buttonSpacing = 5;
 var buttonRadius = 40;
 var buttonSize = 100;
@@ -13,6 +15,7 @@ var deviceType = "";
 var pressTimer;
 var longPress = false;
 var supportButtonReleaseLongPress = false;
+var buttonsGenerated = false;
 
 var apiVersion = 20;
 
@@ -52,7 +55,7 @@ function connect(url) {
 	}
 	
 	document.location.hash = 'connecting';
-	document.getElementById("button-container").innerHTML = '<div class="d-flex align-items-center justify-content-center" style="height: 500px;"><h1>Connecting to ' + url + '... <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true"></span></h1></div>';
+	document.getElementById("button-container").innerHTML = '<div class="d-flex align-items-center justify-content-center" style="height: 500px;"><h1>Connecting... <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true"></span></h1></div>';
 	
 	websocket = new WebSocket(url);
 
@@ -75,6 +78,8 @@ function connect(url) {
 			var obj = JSON.parse(e.data);
 			switch (obj.Method) {
 				case JsonMethod.GET_CONFIG:
+					columns = obj.Columns;
+					rows = obj.Rows;
 					buttonSpacing = obj.ButtonSpacing;
 					buttonRadius = obj.ButtonRadius;
 					buttonBackground = obj.ButtonBackground;
@@ -82,15 +87,35 @@ function connect(url) {
 						supportButtonReleaseLongPress = true;
 					}
 					brightness = obj.Brightness;
-					var settingsObj = { "Brightness": brightness }
+
+					var autoConnect = false;
+					if (obj.AutoConnect) {
+						autoConnect = obj.AutoConnect;
+					}
+
+					var wakeLock = "Connected";
+					if (obj.WakeLock) {
+						wakeLock = obj.WakeLock;
+                    }
+
+					var settingsObj = { "Brightness": brightness, "AutoConnect": autoConnect, "WakeLock": wakeLock };
 					document.location.hash = 'connected;' + JSON.stringify(settingsObj);
-					generateGrid(obj.Columns, obj.Rows);
-					var jsonObj = { "Method": JsonMethod.GET_BUTTONS }
+
+					if (!buttonsGenerated) {
+						document.getElementById("button-container").innerHTML = '<div class="d-flex align-items-center justify-content-center" style="height: 500px;"><h1>Downloading icon packs and buttons... <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true"></span></h1></div>';
+					}
+
+					var jsonObj = { "Method": JsonMethod.GET_BUTTONS };
 					doSend(JSON.stringify(jsonObj));
+					
 
 					autoSize();
 					break;
 				case JsonMethod.GET_BUTTONS:
+					if (!buttonsGenerated) {
+						buttonsGenerated = true;
+						generateGrid(columns, rows);
+                    }
 					var actionButtons = document.getElementsByClassName("action-button");
 					var labels = document.getElementsByClassName("label");
 					for (var i = 0; i < actionButtons.length; i++) {
@@ -322,6 +347,7 @@ function buttonPress(id) {
 	}, 1000);
 	if (document.getElementById("col_" + id)) {
 		document.getElementById("col_" + id).classList.toggle('pressed', true);
+		document.getElementById("col_" + id).classList.toggle('release-transition', false);
 	}
 	var jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_PRESS }
 	doSend(JSON.stringify(jsonObj));
@@ -331,6 +357,7 @@ function buttonPressRelease(id) {
 	clearTimeout(pressTimer);
 	if (document.getElementById("col_" + id)) {
 		document.getElementById("col_" + id).classList.toggle('pressed', false);
+		document.getElementById("col_" + id).classList.toggle('release-transition', true);
 	}
 
 	var jsonObj = { "Message": id, "Method": JsonMethod.BUTTON_RELEASE }
