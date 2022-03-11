@@ -125,10 +125,14 @@ function connect(url) {
 
 					this.buttons = obj.Buttons;
 					for (var i = 0; i < this.buttons.length; i++) {
+						if (!this.buttons[i]) {
+							continue;
+                        }
 						var button = document.getElementById(this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
+						var label = document.getElementById("label_" + this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
 
 						if (button) {
-							if (this.buttons[i] && this.buttons[i].Icon) {
+							if (this.buttons[i].Icon) {
 								var iconPack;
 								var icon;
 
@@ -157,10 +161,11 @@ function connect(url) {
 								}
 
 								button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
-							}
+							} else if (this.buttons[i].IconBase64) {
+								button.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].IconBase64 + ')';
+                            }
 						}
 
-						var label = document.getElementById("label_" + this.buttons[i].Position_Y + "_" + this.buttons[i].Position_X);
 						if (label) {
 							if (this.buttons[i].Label && this.buttons[i].Label.LabelBase64) {
 								label.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].Label.LabelBase64 + ')';
@@ -205,7 +210,9 @@ function connect(url) {
 
 
 							button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
-						} else {
+						} else if (obj.Buttons[0].IconBase64) {
+							button.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].IconBase64 + ')';
+                        } else {
 							button.style.backgroundImage = '';
 						}
 					}

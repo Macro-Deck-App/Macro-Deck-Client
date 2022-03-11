@@ -42,6 +42,7 @@
     <AndroidSigningStorePass>Emily0704</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>SuchByte</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>Emily0704</AndroidSigningKeyPass>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
