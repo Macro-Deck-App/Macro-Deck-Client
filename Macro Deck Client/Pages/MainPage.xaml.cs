@@ -188,7 +188,7 @@ namespace SuchByte.MacroDeck
                     break;
                 case ConnectionState.ERROR:
                     SetWakeLock(false);
-                    DisplayAlert("Error", "Could not connect to host. Please check the wiki or get help in the Discord server.", "OK");
+                    DisplayAlert("Error", "Cannot connect to the host. Please make sure, you typed in the correct IP address, port and your firewall allows the connection. Check the FAQ in the Wiki for more information.", "OK");
                     try
                     {
                         Navigation.PopToRootAsync();
