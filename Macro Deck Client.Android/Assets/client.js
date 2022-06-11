@@ -78,6 +78,9 @@ function connect(url) {
 			var obj = JSON.parse(e.data);
 			switch (obj.Method) {
 				case JsonMethod.GET_CONFIG:
+					if (obj.Columns !== columns || obj.Rows !== rows || obj.ButtonBackground != buttonBackground) {
+						buttonsGenerated = false;
+					}
 					columns = obj.Columns;
 					rows = obj.Rows;
 					buttonSpacing = obj.ButtonSpacing;
@@ -101,9 +104,6 @@ function connect(url) {
 					var settingsObj = { "Brightness": brightness, "AutoConnect": autoConnect, "WakeLock": wakeLock };
 					document.location.hash = 'connected;' + JSON.stringify(settingsObj);
 
-					if (!buttonsGenerated) {
-						document.getElementById("button-container").innerHTML = '<div class="d-flex align-items-center justify-content-center" style="height: 500px;"><h1>Downloading icon packs and buttons... <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true"></span></h1></div>';
-					}
 
 					var jsonObj = { "Method": JsonMethod.GET_BUTTONS };
 					doSend(JSON.stringify(jsonObj));
