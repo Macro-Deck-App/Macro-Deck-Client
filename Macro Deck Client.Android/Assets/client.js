@@ -120,6 +120,7 @@ function connect(url) {
 					var labels = document.getElementsByClassName("label");
 					for (var i = 0; i < actionButtons.length; i++) {
 						actionButtons[i].style.backgroundImage = '';
+						actionButtons[i].classList.toggle("btn-secondary", true);
 						labels[i].style.backgroundImage = '';
 					}
 
@@ -163,7 +164,13 @@ function connect(url) {
 								button.style.backgroundImage = 'url(data:image/gif;base64,' + icon.IconBase64 + ')';
 							} else if (this.buttons[i].IconBase64) {
 								button.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].IconBase64 + ')';
-                            }
+							}
+
+							button.classList.toggle("btn-secondary", !this.buttons[i].BackgroundColorHex);
+
+							if (this.buttons[i].BackgroundColorHex) {
+								button.style.backgroundColor = this.buttons[i].BackgroundColorHex;
+							}
 						}
 
 						if (label) {
@@ -214,6 +221,12 @@ function connect(url) {
 							button.style.backgroundImage = 'url(data:image/gif;base64,' + obj.Buttons[0].IconBase64 + ')';
                         } else {
 							button.style.backgroundImage = '';
+						}
+
+						button.classList.toggle("btn-secondary", !obj.Buttons[0].BackgroundColorHex);
+
+						if (obj.Buttons[0].BackgroundColorHex) {
+							button.style.backgroundColor = obj.Buttons[0].BackgroundColorHex;
 						}
 					}
 
@@ -268,9 +281,8 @@ function generateGrid(columns, rows) {
 			column.setAttribute("id", "col_" + i + "_" + j);
 			column.classList.add("col");
 			column.classList.add("blockBox");
-			var button = document.createElement("button");
+			var button = document.createElement("div");
 			button.classList.add("action-button");
-			button.classList.add("btn");
 			button.classList.toggle("btn-secondary", buttonBackground);
 			button.setAttribute("id", i + "_" + j);
 			$(button).bind('touchstart', function() {
