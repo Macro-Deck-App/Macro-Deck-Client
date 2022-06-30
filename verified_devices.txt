@@ -4,3 +4,4 @@
 - Xiaomi Redmi Note 8 Pro (Android 11)
 - Samsung Galaxy Note 10 (Android 11)
 - Huawei P smart (2019) (Android 10)
+- Huawei Mediapad T5 (Android 8)
