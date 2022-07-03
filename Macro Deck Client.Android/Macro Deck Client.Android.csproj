@@ -63,7 +63,7 @@
     <AndroidSigningKeyAlias>SuchByte</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>hugo1930</AndroidSigningKeyPass>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <AndroidLinkMode>None</AndroidLinkMode>
