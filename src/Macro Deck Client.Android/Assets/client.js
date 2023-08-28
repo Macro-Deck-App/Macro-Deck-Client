@@ -166,9 +166,9 @@ function connect(url) {
 								button.style.backgroundImage = 'url(data:image/gif;base64,' + this.buttons[i].IconBase64 + ')';
 							}
 
-							button.classList.toggle("btn-secondary", !this.buttons[i].BackgroundColorHex);
 
 							if (this.buttons[i].BackgroundColorHex) {
+								button.classList.toggle("btn-secondary", !this.buttons[i].BackgroundColorHex);
 								button.style.backgroundColor = this.buttons[i].BackgroundColorHex;
 							}
 						}
@@ -223,9 +223,9 @@ function connect(url) {
 							button.style.backgroundImage = '';
 						}
 
-						button.classList.toggle("btn-secondary", !obj.Buttons[0].BackgroundColorHex);
 
 						if (obj.Buttons[0].BackgroundColorHex) {
+							button.classList.toggle("btn-secondary", !obj.Buttons[0].BackgroundColorHex);
 							button.style.backgroundColor = obj.Buttons[0].BackgroundColorHex;
 						}
 					}
